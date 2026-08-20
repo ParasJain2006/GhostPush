@@ -51,20 +51,24 @@ function setupEventListeners() {
   document.getElementById("submission-form").addEventListener("submit", handleFormSubmit);
 }
 
+let extractedUrl = "";
+
 async function extractFromCurrentTab() {
   if (typeof chrome !== "undefined" && chrome.tabs) {
     const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
     if (tab && tab.id) {
+      if (tab.url) extractedUrl = tab.url;
       chrome.tabs.sendMessage(tab.id, { action: "extract_problem" }, (response) => {
         if (chrome.runtime.lastError || !response) {
           alert("Could not extract metadata from current page. Please enter details manually.");
           return;
         }
+        if (response.url) extractedUrl = response.url;
         if (response.platform) document.getElementById("platform").value = response.platform;
-        if (response.title) document.getElementById("title").value = response.title;
+        if (response.title) document.getElementById("title").value = response.title.replace(/^\d+\.\s*/, "").trim();
         if (response.difficulty) document.getElementById("difficulty").value = response.difficulty;
         if (response.language) document.getElementById("language").value = response.language;
-        if (response.tags) document.getElementById("tags").value = response.tags.join(", ");
+        if (response.tags) document.getElementById("tags").value = Array.isArray(response.tags) ? response.tags.join(", ") : response.tags;
         if (response.code) document.getElementById("code").value = response.code;
       });
     }
@@ -84,7 +88,8 @@ async function handleFormSubmit(e) {
   currentJobId = jobId;
 
   const platform = document.getElementById("platform").value;
-  const title = document.getElementById("title").value.trim();
+  const rawTitle = document.getElementById("title").value.trim();
+  const title = rawTitle.replace(/^\d+\.\s*/, "").trim();
   const difficulty = document.getElementById("difficulty").value;
   const language = document.getElementById("language").value;
   const tagsRaw = document.getElementById("tags").value.trim();
@@ -92,8 +97,8 @@ async function handleFormSubmit(e) {
   const code = document.getElementById("code").value;
   const repoPath = document.getElementById("repo-path").value.trim();
 
-  let problemUrl = "";
-  if (typeof chrome !== "undefined" && chrome.tabs) {
+  let problemUrl = extractedUrl;
+  if (!problemUrl && typeof chrome !== "undefined" && chrome.tabs) {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab && activeTab.url) {

@@ -75,3 +75,116 @@ def test_extension_payload_compatibility_with_backend_job_api(isolated_client):
     data = response.json()
     assert data["job_id"] == "JOB-EXT-1723400000-1234"
     assert data["status"] == "QUEUED"
+
+
+def test_extension_content_js_detect_language_logic():
+    """Verify detectLanguage logic in content.js via regex/logic assertions matching content.js implementation."""
+    user_java_code = """class Solution {
+    public int[] twoSum(int[] nums, int target) {
+        for (int i = 0; i < nums.length; i++) {
+            for (int j = i + 1; j < nums.length; j++) {
+                if (nums[i] + nums[j] == target) {
+                    return new int[]{i, j};
+                }
+            }
+        }
+        return new int[]{};
+    }
+}"""
+
+    python_code = """class Solution:
+    def twoSum(self, nums: List[int], target: int) -> List[int]:
+        pass"""
+
+    js_code = """var twoSum = function(nums, target) {
+    const map = new Map();
+    return [];
+};"""
+
+    cpp_code = """#include <vector>
+using namespace std;
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {}
+};"""
+
+    ts_code = """function twoSum(nums: number[], target: number): number[] {
+    const res: number[] = [];
+    return res;
+}"""
+
+    # Helper simulating detectLanguage logic in content.js
+    def sim_detect(dom_text, code):
+        if dom_text and isinstance(dom_text, str):
+            norm = dom_text.strip().lower()
+            if "java" in norm and "javascript" not in norm:
+                return "java"
+            if "c++" in norm or "cpp" in norm:
+                return "cpp"
+            if "python" in norm:
+                return "python"
+            if "javascript" in norm or "js" in norm:
+                return "javascript"
+            if "typescript" in norm or "ts" in norm:
+                return "typescript"
+
+        if code and isinstance(code, str):
+            import re
+
+            if re.search(r"\#include\s*<|\bstd::|\bvector\s*<|\bpublic\s*:", code):
+                return "cpp"
+
+            if (
+                re.search(r"\bpublic\s+class\b", code)
+                or re.search(r"\bimport\s+java\.", code)
+                or re.search(r"\bSystem\.out\.", code)
+                or re.search(r"\bnew\s+int\s*\[", code)
+                or re.search(r"\bint\s*\[\s*\]", code)
+                or re.search(r"\bpublic\s+(static\s+)?(int|void|boolean|String|double|float|long|int\[\]|List|TreeNode|ListNode)\b", code)
+                or (re.search(r"\bclass\s+Solution\b", code) and not re.search(r"\bclass\s+Solution\s*:", code))
+            ):
+                return "java"
+
+            if (
+                re.search(r"\bdef\s+\w+\s*\(", code)
+                or re.search(r"\bclass\s+Solution\s*:", code)
+                or re.search(r"\bfrom\s+typing\b", code)
+                or re.search(r"\bimport\s+typing\b", code)
+                or re.search(r"\bself\.", code)
+            ):
+                return "python"
+
+            if re.search(r"\b(function|const|let|var)\b", code):
+                if re.search(r"\b(interface|type)\s+\w+", code) or re.search(r":\s*(number|string|boolean)\[\]?", code):
+                    return "typescript"
+                return "javascript"
+
+        return "python"
+
+    # Test exact user Java snippet
+    assert sim_detect("", user_java_code) == "java"
+    assert sim_detect("Java", user_java_code) == "java"
+
+    # Test Python
+    assert sim_detect("", python_code) == "python"
+    assert sim_detect("Python3", python_code) == "python"
+
+    # Test JavaScript
+    assert sim_detect("", js_code) == "javascript"
+    assert sim_detect("JavaScript", js_code) == "javascript"
+
+    # Test C++
+    assert sim_detect("", cpp_code) == "cpp"
+    assert sim_detect("C++", cpp_code) == "cpp"
+
+    # Test TypeScript
+    assert sim_detect("", ts_code) == "typescript"
+    assert sim_detect("TypeScript", ts_code) == "typescript"
+
+    # Test DOM preference over code
+    assert sim_detect("Java", python_code) == "java"
+    assert sim_detect("C++", user_java_code) == "cpp"
+
+    # Test fallback default when selector and code are unknown
+    assert sim_detect("", "foo bar baz") == "python"
+

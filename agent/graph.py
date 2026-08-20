@@ -83,12 +83,20 @@ def generate_readme_node(state: AgentState) -> AgentState:
         prob = p_data.get("problem", {})
         sol = p_data.get("solution", {})
 
+        raw_tags = prob.get("tags", [])
+        if isinstance(raw_tags, list):
+            tags_str = ", ".join([str(t).strip() for t in raw_tags if str(t).strip()])
+        elif isinstance(raw_tags, str):
+            tags_str = ", ".join([t.strip() for t in raw_tags.split(",") if t.strip()])
+        else:
+            tags_str = str(raw_tags).strip() if raw_tags else ""
+
         prompt_input = README_GENERATION_PROMPT.format(
             platform=p_data.get("platform", ""),
             title=prob.get("title", ""),
             difficulty=prob.get("difficulty", "Easy"),
             url=prob.get("url", ""),
-            tags=", ".join(prob.get("tags", [])),
+            tags=tags_str,
             language=sol.get("language", "text"),
             code=sol.get("code", ""),
         )
@@ -99,7 +107,21 @@ def generate_readme_node(state: AgentState) -> AgentState:
             api_key=p_data.get("api_key") or p_data.get("ai_api_key"),
         )
         response = llm.invoke(prompt_input)
-        readme_str = getattr(response, "content", str(response))
+
+        content_obj = getattr(response, "content", response)
+        if isinstance(content_obj, list):
+            text_parts = []
+            for part in content_obj:
+                if isinstance(part, str):
+                    text_parts.append(part)
+                elif isinstance(part, dict) and "text" in part:
+                    text_parts.append(str(part["text"]))
+                else:
+                    text_parts.append(str(part))
+            readme_str = "".join(text_parts)
+        else:
+            readme_str = str(content_obj)
+
         state["readme_content"] = readme_str.strip()
 
     except Exception as e:

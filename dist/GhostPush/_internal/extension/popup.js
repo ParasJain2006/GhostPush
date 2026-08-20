@@ -92,6 +92,18 @@ async function handleFormSubmit(e) {
   const code = document.getElementById("code").value;
   const repoPath = document.getElementById("repo-path").value.trim();
 
+  let problemUrl = "";
+  if (typeof chrome !== "undefined" && chrome.tabs) {
+    try {
+      const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (activeTab && activeTab.url) {
+        problemUrl = activeTab.url;
+      }
+    } catch (e) {
+      console.warn("[GhostPush] Could not query active tab URL:", e);
+    }
+  }
+
   const payload = {
     api_version: "1.0",
     job_id: jobId,
@@ -99,7 +111,7 @@ async function handleFormSubmit(e) {
     problem: {
       title: title,
       difficulty: difficulty,
-      url: window.location ? window.location.href : "",
+      url: problemUrl,
       tags: tags
     },
     solution: {
@@ -166,9 +178,12 @@ function showProgress(jobId, status, message) {
   if (status === "COMPLETED" || status === "SUCCESS") {
     statusBadge.style.background = "rgba(16, 185, 129, 0.2)";
     statusBadge.style.color = "#10b981";
-  } else if (status === "FAILED") {
+  } else if (status === "FAILED" || status === "ERROR") {
     statusBadge.style.background = "rgba(239, 68, 68, 0.2)";
     statusBadge.style.color = "#ef4444";
+  } else if (status === "WARNING") {
+    statusBadge.style.background = "rgba(245, 158, 11, 0.2)";
+    statusBadge.style.color = "#f59e0b";
   } else {
     statusBadge.style.background = "rgba(99, 102, 241, 0.2)";
     statusBadge.style.color = "#818cf8";

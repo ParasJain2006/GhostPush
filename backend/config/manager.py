@@ -2,6 +2,7 @@
 
 import json
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -167,3 +168,49 @@ class ConfigManager:
         if val and val.strip():
             return val.strip()
         return None
+
+    def set_api_key(self, provider: str, api_key: str) -> None:
+        """Save an API key for a provider to %APPDATA%/GhostPush/.env and update process memory.
+
+        Preserves existing lines/comments in .env and ensures the key is NOT saved to config.json.
+        """
+        if not provider or not isinstance(provider, str):
+            raise GhostPushError(ErrorCode.INVALID_JSON, "Provider name must be a non-empty string.")
+
+        norm_provider = provider.lower().strip()
+        env_var = PROVIDER_ENV_MAP.get(norm_provider)
+        if not env_var:
+            raise GhostPushError(
+                ErrorCode.INVALID_JSON,
+                f"Unsupported AI provider '{provider}'. Valid providers: {sorted(PROVIDER_ENV_MAP.keys())}",
+            )
+
+        clean_key = api_key.strip()
+        env_path = get_config_dir() / ".env"
+        env_path.parent.mkdir(parents=True, exist_ok=True)
+
+        lines = []
+        if env_path.exists():
+            lines = env_path.read_text(encoding="utf-8").splitlines()
+
+        updated = False
+        new_lines = []
+        pattern = re.compile(rf"^\s*{re.escape(env_var)}\s*=")
+
+        for line in lines:
+            if pattern.match(line):
+                new_lines.append(f"{env_var}={clean_key}")
+                updated = True
+            else:
+                new_lines.append(line)
+
+        if not updated:
+            new_lines.append(f"{env_var}={clean_key}")
+
+        env_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+
+        if clean_key:
+            os.environ[env_var] = clean_key
+        else:
+            os.environ.pop(env_var, None)
+

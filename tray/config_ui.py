@@ -32,6 +32,14 @@ class TrayConfigHelper:
         """Apply non-secret updates via ConfigManager, enforcing AppSettings validation."""
         return self.config_manager.update_config(updates)
 
+    def get_api_key(self, provider: str) -> Optional[str]:
+        """Resolve current API key for a provider via ConfigManager."""
+        return self.config_manager.get_api_key(provider)
+
+    def set_api_key(self, provider: str, api_key: str) -> None:
+        """Save API key for a provider to %APPDATA%/GhostPush/.env via ConfigManager."""
+        self.config_manager.set_api_key(provider, api_key)
+
 
 class TrayConfigDialog:
     """Tkinter-based GUI configuration dialog for GhostPush tray app."""
@@ -56,7 +64,7 @@ class TrayConfigDialog:
             self.window = tk.Tk()
 
         self.window.title("GhostPush Configuration")
-        self.window.geometry("450x400")
+        self.window.geometry("450x480")
 
         # Repository Path
         tk.Label(self.window, text="Local Repository Path:").pack(anchor="w", padx=10, pady=(10, 2))
@@ -83,6 +91,26 @@ class TrayConfigDialog:
         )
         provider_cb.pack(fill="x", padx=10)
 
+        # AI API Key (Masked)
+        tk.Label(self.window, text="AI API Key (Optional):").pack(anchor="w", padx=10, pady=(10, 2))
+        apikey_var = tk.StringVar()
+        apikey_entry = tk.Entry(self.window, textvariable=apikey_var, show="*")
+        apikey_entry.pack(fill="x", padx=10)
+
+        key_status_label = tk.Label(self.window, text="", font=("Arial", 8, "italic"))
+        key_status_label.pack(anchor="w", padx=10, pady=(2, 0))
+
+        def update_key_status(*args):
+            current_provider = provider_var.get().strip()
+            existing_key = self.helper.get_api_key(current_provider)
+            if existing_key:
+                key_status_label.config(text=f"✓ API key configured for {current_provider}", fg="#10b981")
+            else:
+                key_status_label.config(text=f"No API key configured for {current_provider}", fg="#6b7280")
+
+        provider_cb.bind("<<ComboboxSelected>>", update_key_status)
+        update_key_status()
+
         # AI Model
         tk.Label(self.window, text="AI Model (Optional):").pack(anchor="w", padx=10, pady=(10, 2))
         model_var = tk.StringVar(value=settings.ai_model)
@@ -107,15 +135,23 @@ class TrayConfigDialog:
 
         # Save Action
         def on_save():
+            selected_provider = provider_var.get().strip()
+            typed_api_key = apikey_var.get().strip()
+
             updates = {
                 "repository_path": repo_var.get().strip(),
-                "ai_provider": provider_var.get().strip(),
+                "ai_provider": selected_provider,
                 "ai_model": model_var.get().strip(),
                 "log_level": log_var.get().strip(),
                 "auto_commit": auto_commit_var.get(),
                 "auto_push": auto_push_var.get(),
             }
             try:
+                # Save API key first if non-empty
+                if typed_api_key:
+                    self.helper.set_api_key(selected_provider, typed_api_key)
+
+                # Save non-secret AppSettings to config.json
                 self.helper.update_settings(updates)
                 messagebox.showinfo("Success", "Configuration saved successfully!")
                 if self.window:
@@ -127,3 +163,4 @@ class TrayConfigDialog:
 
         if not self.parent:
             self.window.mainloop()
+

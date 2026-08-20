@@ -50,6 +50,33 @@
         if (codeLines.length > 0) {
           code = Array.from(codeLines).map(l => l.textContent).join("\n");
         }
+        // Try extracting language from LeetCode DOM selector buttons
+        const langBtn = document.querySelector("button[id*='headlessui-popover-button'], button[class*='select'], [data-cy='lang-select']");
+        if (langBtn) {
+          const btnText = langBtn.textContent.trim().toLowerCase();
+          if (btnText.includes("java") && !btnText.includes("javascript")) language = "java";
+          else if (btnText.includes("c++") || btnText.includes("cpp")) language = "cpp";
+          else if (btnText.includes("python")) language = "python";
+          else if (btnText.includes("javascript") || btnText.includes("js")) language = "javascript";
+          else if (btnText.includes("typescript") || btnText.includes("ts")) language = "typescript";
+        }
+
+        // Code syntax heuristics if DOM extraction was ambiguous
+        if (code) {
+          if (/\b(public\s+class|import\s+java\.|System\.out\.)\b/.test(code)) {
+            language = "java";
+          } else if (/#include\s*<|std::/.test(code)) {
+            language = "cpp";
+          } else if (/\bdef\s+\w+\s*\(|\bclass\s+Solution\s*:/.test(code)) {
+            language = "python";
+          } else if (/\b(function|const|let|var)\b/.test(code)) {
+            if (/\b(interface|type)\s+\w+/.test(code)) {
+              language = "typescript";
+            } else {
+              language = "javascript";
+            }
+          }
+        }
       } else if (platform === "gfg") {
         // GFG extraction
         const titleEl = document.querySelector("h3[class*='problem-tab']");
