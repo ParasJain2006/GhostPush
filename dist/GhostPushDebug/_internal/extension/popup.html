@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GhostPush</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo-container">
+      <div class="logo-icon">GP</div>
+      <div class="title">GhostPush</div>
+    </div>
+    <div id="backend-status" class="status-badge status-offline">Connecting...</div>
+  </div>
+
+  <form id="submission-form">
+    <div class="row">
+      <div class="form-group">
+        <label for="platform">Platform</label>
+        <select id="platform" required>
+          <option value="leetcode">LeetCode</option>
+          <option value="gfg">GeeksforGeeks</option>
+          <option value="codeforces">Codeforces</option>
+          <option value="hackerrank">HackerRank</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty">
+          <option value="Easy">Easy</option>
+          <option value="Medium">Medium</option>
+          <option value="Hard">Hard</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="title">Problem Title</label>
+      <input type="text" id="title" placeholder="e.g. Two Sum" required>
+    </div>
+
+    <div class="row">
+      <div class="form-group">
+        <label for="language">Language</label>
+        <select id="language">
+          <option value="python">Python</option>
+          <option value="java">Java</option>
+          <option value="cpp">C++</option>
+          <option value="javascript">JavaScript</option>
+          <option value="typescript">TypeScript</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="tags">Tags (comma separated)</label>
+        <input type="text" id="tags" placeholder="e.g. Array, Hash Table">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="code">Solution Code</label>
+      <textarea id="code" placeholder="Paste your solution code here..." required></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="repo-path">Local Repository Path</label>
+      <input type="text" id="repo-path" placeholder="Absolute directory path on your system" required>
+    </div>
+
+    <button type="button" id="btn-autofill" class="btn-primary" style="background-color: #3b82f6; margin-bottom: 6px;">
+      ⚡ Extract Page Metadata
+    </button>
+    <button type="submit" id="btn-submit" class="btn-primary">
+      🚀 Push Solution
+    </button>
+  </form>
+
+  <div id="progress-container" class="progress-box" style="display: none;">
+    <div class="progress-header">
+      <span id="job-id-display">Job: -</span>
+      <span id="job-status-badge" class="status-badge" style="background: #334155; color: #f8fafc;">QUEUED</span>
+    </div>
+    <div id="log-message" class="log-message">Waiting for updates...</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

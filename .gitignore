@@ -1,0 +1,14 @@
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# IDE files
+.vscode/
+.idea/

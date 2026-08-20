@@ -1,0 +1,487 @@
+{
+  "agent/__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "3937e2f660097fc6ad5c028310a4cdca",
+    "semantic_hash": "3937e2f660097fc6ad5c028310a4cdca"
+  },
+  "agent/graph.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "1f30f7a0a3110d432f26f2c608369204",
+    "semantic_hash": "1f30f7a0a3110d432f26f2c608369204"
+  },
+  "agent/prompts.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "e4732d76e7c691efe842d4cac1ac8628",
+    "semantic_hash": "e4732d76e7c691efe842d4cac1ac8628"
+  },
+  "agent/providers.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "c37855c9fe39ea9c9ff5143627ccb986",
+    "semantic_hash": "c37855c9fe39ea9c9ff5143627ccb986"
+  },
+  "agent/runner.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "30ca967b0f348e1814b3540ad6eab8ab",
+    "semantic_hash": "30ca967b0f348e1814b3540ad6eab8ab"
+  },
+  "backend/agent/__init__.py": {
+    "mtime": 1786098361.356446,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "backend/agent/adapter.py": {
+    "mtime": 1786098549.9491856,
+    "ast_hash": "6bce6205a9bca3d6faba6294e1784761",
+    "semantic_hash": "6bce6205a9bca3d6faba6294e1784761"
+  },
+  "backend/config/models.py": {
+    "mtime": 1786106319.856834,
+    "ast_hash": "df32b2dff1e879d06db10559ff0b01bc",
+    "semantic_hash": "df32b2dff1e879d06db10559ff0b01bc"
+  },
+  "common/__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "9f848cd81e3daf785e728e6542c02360",
+    "semantic_hash": "9f848cd81e3daf785e728e6542c02360"
+  },
+  "common/constants.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "750e287209a67cb7a6d6d2049842b8fb",
+    "semantic_hash": "750e287209a67cb7a6d6d2049842b8fb"
+  },
+  "common/enums.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "99c6ac326abd8fbd6ebdde768929ec2a",
+    "semantic_hash": "99c6ac326abd8fbd6ebdde768929ec2a"
+  },
+  "common/errors.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "db5e8ff68ac4ed48a43813b6153f874f",
+    "semantic_hash": "db5e8ff68ac4ed48a43813b6153f874f"
+  },
+  "common/schemas.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "f70f93d9cffa5ef401f411a77424d689",
+    "semantic_hash": "f70f93d9cffa5ef401f411a77424d689"
+  },
+  "mcp/__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "0b66c2d2196c823164d49d9c366f3beb",
+    "semantic_hash": "0b66c2d2196c823164d49d9c366f3beb"
+  },
+  "mcp/file_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "6f2dc5c41f5698de8473a293dabecabc",
+    "semantic_hash": "6f2dc5c41f5698de8473a293dabecabc"
+  },
+  "mcp/git_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "5abad9be5be457034a7fb9bbef36fd1d",
+    "semantic_hash": "5abad9be5be457034a7fb9bbef36fd1d"
+  },
+  "mcp/notification_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "246003021d3ac0a5be66682a73c12da6",
+    "semantic_hash": "246003021d3ac0a5be66682a73c12da6"
+  },
+  "test_github_push.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "2b1c69c610cc7b7e4ca3faa163ca83ce",
+    "semantic_hash": "2b1c69c610cc7b7e4ca3faa163ca83ce"
+  },
+  "tests/__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "d9f40c897451e19f02333b61bb625ccf",
+    "semantic_hash": "d9f40c897451e19f02333b61bb625ccf"
+  },
+  "tests/test_adapter.py": {
+    "mtime": 1786098555.119887,
+    "ast_hash": "115be1ac0e89c94ad2f51a18b3fa937c",
+    "semantic_hash": "115be1ac0e89c94ad2f51a18b3fa937c"
+  },
+  "tests/test_agent.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "7d6dea462fc047ee08a2a1750236da96",
+    "semantic_hash": "7d6dea462fc047ee08a2a1750236da96"
+  },
+  ".agents/rules/graphify.md": {
+    "mtime": 1786437842.1122482,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": "a0e4d192b9e2e17256124dbfc8e24e6a"
+  },
+  ".agents/workflows/graphify.md": {
+    "mtime": 1786437842.1142576,
+    "ast_hash": "637776aa6f7496d069afe7520c845c8a",
+    "semantic_hash": "637776aa6f7496d069afe7520c845c8a"
+  },
+  "README.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "docs/ARCHITECTURE_AND_WORKFLOW.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "c0965bb476868b9281913c2d63dc6150",
+    "semantic_hash": "c0965bb476868b9281913c2d63dc6150"
+  },
+  "docs/PARAS_ARCHITECTURE_REPORT.md": {
+    "mtime": 1786096640.9578602,
+    "ast_hash": "b919260b82a593775774c40911a36bd2",
+    "semantic_hash": "b919260b82a593775774c40911a36bd2"
+  },
+  "docs/RECREATION_GUIDE.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "e477257ea31b1c7bf0bc87b1d3b90c82",
+    "semantic_hash": "e477257ea31b1c7bf0bc87b1d3b90c82"
+  },
+  "requirements.txt": {
+    "mtime": 1785787477.0,
+    "ast_hash": "c6afa20730d06b6fef6321037752a5cf",
+    "semantic_hash": "c6afa20730d06b6fef6321037752a5cf"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\agent\\__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "3937e2f660097fc6ad5c028310a4cdca",
+    "semantic_hash": "3937e2f660097fc6ad5c028310a4cdca"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\agent\\graph.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "1f30f7a0a3110d432f26f2c608369204",
+    "semantic_hash": "1f30f7a0a3110d432f26f2c608369204"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\agent\\prompts.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "e4732d76e7c691efe842d4cac1ac8628",
+    "semantic_hash": "e4732d76e7c691efe842d4cac1ac8628"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\agent\\providers.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "c37855c9fe39ea9c9ff5143627ccb986",
+    "semantic_hash": "c37855c9fe39ea9c9ff5143627ccb986"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\agent\\runner.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "30ca967b0f348e1814b3540ad6eab8ab",
+    "semantic_hash": "30ca967b0f348e1814b3540ad6eab8ab"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\agent\\__init__.py": {
+    "mtime": 1786098361.356446,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\agent\\adapter.py": {
+    "mtime": 1786098549.9491856,
+    "ast_hash": "6bce6205a9bca3d6faba6294e1784761",
+    "semantic_hash": "6bce6205a9bca3d6faba6294e1784761"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\__init__.py": {
+    "mtime": 1786440255.6953511,
+    "ast_hash": "53eb565ed492d76f068d26dd391eeac8",
+    "semantic_hash": "53eb565ed492d76f068d26dd391eeac8"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\app.py": {
+    "mtime": 1786441327.2549825,
+    "ast_hash": "e0682368e82081fb4af92a3a3926df94",
+    "semantic_hash": "e0682368e82081fb4af92a3a3926df94"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\routes\\__init__.py": {
+    "mtime": 1786440899.127592,
+    "ast_hash": "4cfa28d513b93fa946c3327c84cdc744",
+    "semantic_hash": "4cfa28d513b93fa946c3327c84cdc744"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\routes\\config.py": {
+    "mtime": 1786440683.5405266,
+    "ast_hash": "7b9ab39e580e868232de5845a875bb82",
+    "semantic_hash": "7b9ab39e580e868232de5845a875bb82"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\routes\\health.py": {
+    "mtime": 1786440241.7804523,
+    "ast_hash": "16834abda8a747bf1df223265976c7cb",
+    "semantic_hash": "16834abda8a747bf1df223265976c7cb"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\routes\\jobs.py": {
+    "mtime": 1786440412.2473297,
+    "ast_hash": "61278ae31d98ca3df248bfffed27dd8f",
+    "semantic_hash": "61278ae31d98ca3df248bfffed27dd8f"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\api\\websocket.py": {
+    "mtime": 1786440891.5993817,
+    "ast_hash": "fdf128b5facce600eb832268dfd2e2d7",
+    "semantic_hash": "fdf128b5facce600eb832268dfd2e2d7"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\config\\__init__.py": {
+    "mtime": 1786439037.9885352,
+    "ast_hash": "aabbd3daf312490a77614c719862d724",
+    "semantic_hash": "aabbd3daf312490a77614c719862d724"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\config\\manager.py": {
+    "mtime": 1786439033.26229,
+    "ast_hash": "b30223bfe5e8872e05e38ad0a55759e6",
+    "semantic_hash": "b30223bfe5e8872e05e38ad0a55759e6"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\config\\models.py": {
+    "mtime": 1786106319.856834,
+    "ast_hash": "df32b2dff1e879d06db10559ff0b01bc",
+    "semantic_hash": "df32b2dff1e879d06db10559ff0b01bc"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\config\\settings.py": {
+    "mtime": 1786439026.9021938,
+    "ast_hash": "b020d8f0235d6387927089f4fa6f47cb",
+    "semantic_hash": "b020d8f0235d6387927089f4fa6f47cb"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\db\\__init__.py": {
+    "mtime": 1786439572.6052759,
+    "ast_hash": "459407ecbafedfdd2b1cedaf6795d8b3",
+    "semantic_hash": "459407ecbafedfdd2b1cedaf6795d8b3"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\db\\database.py": {
+    "mtime": 1786439222.3202415,
+    "ast_hash": "858f19d757a9f7d185ede63e1a54542d",
+    "semantic_hash": "858f19d757a9f7d185ede63e1a54542d"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\db\\repository.py": {
+    "mtime": 1786439722.0785851,
+    "ast_hash": "fc42c78f5a801a98bdbd71d36f0b27c5",
+    "semantic_hash": "fc42c78f5a801a98bdbd71d36f0b27c5"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\db\\schema.py": {
+    "mtime": 1786439227.1815746,
+    "ast_hash": "46d741a34fa72288ea87497286f25439",
+    "semantic_hash": "46d741a34fa72288ea87497286f25439"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\jobs\\__init__.py": {
+    "mtime": 1786439739.1195712,
+    "ast_hash": "be59b813f990300c6c56d133b1d51f76",
+    "semantic_hash": "be59b813f990300c6c56d133b1d51f76"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\jobs\\queue.py": {
+    "mtime": 1786439728.1225128,
+    "ast_hash": "e8f65b29dd3a975434040066b3cf5bab",
+    "semantic_hash": "e8f65b29dd3a975434040066b3cf5bab"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\backend\\jobs\\worker.py": {
+    "mtime": 1786439733.9866276,
+    "ast_hash": "37751a3cacafe8c34d2f2758ac0c1ec7",
+    "semantic_hash": "37751a3cacafe8c34d2f2758ac0c1ec7"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\common\\__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "9f848cd81e3daf785e728e6542c02360",
+    "semantic_hash": "9f848cd81e3daf785e728e6542c02360"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\common\\constants.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "750e287209a67cb7a6d6d2049842b8fb",
+    "semantic_hash": "750e287209a67cb7a6d6d2049842b8fb"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\common\\enums.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "99c6ac326abd8fbd6ebdde768929ec2a",
+    "semantic_hash": "99c6ac326abd8fbd6ebdde768929ec2a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\common\\errors.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "db5e8ff68ac4ed48a43813b6153f874f",
+    "semantic_hash": "db5e8ff68ac4ed48a43813b6153f874f"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\common\\schemas.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "f70f93d9cffa5ef401f411a77424d689",
+    "semantic_hash": "f70f93d9cffa5ef401f411a77424d689"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\extension\\background.js": {
+    "mtime": 1786442523.5735972,
+    "ast_hash": "ebd4206f22de16e27ec618f441a82f5e",
+    "semantic_hash": "ebd4206f22de16e27ec618f441a82f5e"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\extension\\content.js": {
+    "mtime": 1786442518.4708097,
+    "ast_hash": "3cafa23f40f0850b4e64bfa8f7ba154a",
+    "semantic_hash": "3cafa23f40f0850b4e64bfa8f7ba154a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\extension\\manifest.json": {
+    "mtime": 1786442512.7207625,
+    "ast_hash": "12cff86e4b7eb3168429ff446c283e43",
+    "semantic_hash": "12cff86e4b7eb3168429ff446c283e43"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\extension\\popup.js": {
+    "mtime": 1786442540.9557166,
+    "ast_hash": "bd7f51ec9f5928e309664d15b7d1ed3f",
+    "semantic_hash": "bd7f51ec9f5928e309664d15b7d1ed3f"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\mcp\\__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "0b66c2d2196c823164d49d9c366f3beb",
+    "semantic_hash": "0b66c2d2196c823164d49d9c366f3beb"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\mcp\\file_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "6f2dc5c41f5698de8473a293dabecabc",
+    "semantic_hash": "6f2dc5c41f5698de8473a293dabecabc"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\mcp\\git_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "5abad9be5be457034a7fb9bbef36fd1d",
+    "semantic_hash": "5abad9be5be457034a7fb9bbef36fd1d"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\mcp\\notification_tool.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "246003021d3ac0a5be66682a73c12da6",
+    "semantic_hash": "246003021d3ac0a5be66682a73c12da6"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\scripts\\__init__.py": {
+    "mtime": 1786445204.88324,
+    "ast_hash": "ddbdb61013c9fb73f0e98c9bede7aa7f",
+    "semantic_hash": "ddbdb61013c9fb73f0e98c9bede7aa7f"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\scripts\\build_exe.py": {
+    "mtime": 1786446957.4879518,
+    "ast_hash": "2d1044553ec2408b07a5673349d7df6a",
+    "semantic_hash": "2d1044553ec2408b07a5673349d7df6a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\scripts\\launch.py": {
+    "mtime": 1786445799.5157623,
+    "ast_hash": "c0205e95144be15040dd9015a3765ff2",
+    "semantic_hash": "c0205e95144be15040dd9015a3765ff2"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\scripts\\setup_env.py": {
+    "mtime": 1786445792.1080678,
+    "ast_hash": "ed1be547205a4051afc1868cc6545d87",
+    "semantic_hash": "ed1be547205a4051afc1868cc6545d87"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\test_github_push.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "2b1c69c610cc7b7e4ca3faa163ca83ce",
+    "semantic_hash": "2b1c69c610cc7b7e4ca3faa163ca83ce"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\__init__.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "d9f40c897451e19f02333b61bb625ccf",
+    "semantic_hash": "d9f40c897451e19f02333b61bb625ccf"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_adapter.py": {
+    "mtime": 1786098555.119887,
+    "ast_hash": "115be1ac0e89c94ad2f51a18b3fa937c",
+    "semantic_hash": "115be1ac0e89c94ad2f51a18b3fa937c"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_agent.py": {
+    "mtime": 1785787477.0,
+    "ast_hash": "7d6dea462fc047ee08a2a1750236da96",
+    "semantic_hash": "7d6dea462fc047ee08a2a1750236da96"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_api.py": {
+    "mtime": 1786440702.1505902,
+    "ast_hash": "1dad3d00b99feb2c3caa18edcc8d81d5",
+    "semantic_hash": "1dad3d00b99feb2c3caa18edcc8d81d5"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_config.py": {
+    "mtime": 1786439044.1050255,
+    "ast_hash": "aef3897712cca355aab8dc53b5864be1",
+    "semantic_hash": "aef3897712cca355aab8dc53b5864be1"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_db.py": {
+    "mtime": 1786439579.8167596,
+    "ast_hash": "375fea2515fbb78a3f7746aeea9a7ce2",
+    "semantic_hash": "375fea2515fbb78a3f7746aeea9a7ce2"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_extension.py": {
+    "mtime": 1786442546.1861482,
+    "ast_hash": "0e890497180ae3d6ce0a84916b77b1a9",
+    "semantic_hash": "0e890497180ae3d6ce0a84916b77b1a9"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_jobs.py": {
+    "mtime": 1786439746.6912484,
+    "ast_hash": "4f354529057cbd86f38c464298e55637",
+    "semantic_hash": "4f354529057cbd86f38c464298e55637"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_packaging.py": {
+    "mtime": 1786446102.7365088,
+    "ast_hash": "a895a882577c8686e134e744c180defd",
+    "semantic_hash": "a895a882577c8686e134e744c180defd"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_scripts.py": {
+    "mtime": 1786445815.9933288,
+    "ast_hash": "705ba6cded7941c1641f97bba92c7cb8",
+    "semantic_hash": "705ba6cded7941c1641f97bba92c7cb8"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_tray.py": {
+    "mtime": 1786445807.6160016,
+    "ast_hash": "56893db15a878b0a619dd2f523542a6a",
+    "semantic_hash": "56893db15a878b0a619dd2f523542a6a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tests\\test_websocket.py": {
+    "mtime": 1786441345.5793285,
+    "ast_hash": "db135775841c1c1d2b3614716f29adbb",
+    "semantic_hash": "db135775841c1c1d2b3614716f29adbb"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tray\\__init__.py": {
+    "mtime": 1786443917.9027653,
+    "ast_hash": "fb148ffa34ba7038f447a7c60e87a62f",
+    "semantic_hash": "fb148ffa34ba7038f447a7c60e87a62f"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tray\\backend_launcher.py": {
+    "mtime": 1786445780.045231,
+    "ast_hash": "c35e74b910ae3fd1c7a8e9b8a8a5867e",
+    "semantic_hash": "c35e74b910ae3fd1c7a8e9b8a8a5867e"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tray\\config_ui.py": {
+    "mtime": 1786443482.8678346,
+    "ast_hash": "fa9d28cb705b1d201f94aa0e1a42f88b",
+    "semantic_hash": "fa9d28cb705b1d201f94aa0e1a42f88b"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\tray\\tray_app.py": {
+    "mtime": 1786444500.1442852,
+    "ast_hash": "6136503c0a5802aae47d3e289ff09579",
+    "semantic_hash": "6136503c0a5802aae47d3e289ff09579"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\.agents\\rules\\ghostpush-core.md": {
+    "mtime": 1786438660.8944616,
+    "ast_hash": "2231bb5192f2218a2ad8136f4f6829dd",
+    "semantic_hash": "2231bb5192f2218a2ad8136f4f6829dd"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\.agents\\rules\\graphify.md": {
+    "mtime": 1786437842.1122482,
+    "ast_hash": "a0e4d192b9e2e17256124dbfc8e24e6a",
+    "semantic_hash": "a0e4d192b9e2e17256124dbfc8e24e6a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\.agents\\skills\\backend-module\\SKILL.md": {
+    "mtime": 1786438665.7810812,
+    "ast_hash": "c6b5b7a08d6faf87707b53f82050c4a3",
+    "semantic_hash": "c6b5b7a08d6faf87707b53f82050c4a3"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\.agents\\workflows\\graphify.md": {
+    "mtime": 1786437842.1142576,
+    "ast_hash": "637776aa6f7496d069afe7520c845c8a",
+    "semantic_hash": "637776aa6f7496d069afe7520c845c8a"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\README.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "d41d8cd98f00b204e9800998ecf8427e",
+    "semantic_hash": "d41d8cd98f00b204e9800998ecf8427e"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\docs\\ARCHITECTURE_AND_WORKFLOW.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "c0965bb476868b9281913c2d63dc6150",
+    "semantic_hash": "c0965bb476868b9281913c2d63dc6150"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\docs\\PARAS_ARCHITECTURE_REPORT.md": {
+    "mtime": 1786096640.9578602,
+    "ast_hash": "b919260b82a593775774c40911a36bd2",
+    "semantic_hash": "b919260b82a593775774c40911a36bd2"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\docs\\RECREATION_GUIDE.md": {
+    "mtime": 1785787477.0,
+    "ast_hash": "e477257ea31b1c7bf0bc87b1d3b90c82",
+    "semantic_hash": "e477257ea31b1c7bf0bc87b1d3b90c82"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\extension\\popup.html": {
+    "mtime": 1786442533.8783772,
+    "ast_hash": "a4b48be7264a920ea1160d9e68687c79",
+    "semantic_hash": "a4b48be7264a920ea1160d9e68687c79"
+  },
+  "T:\\Projects\\GhostPush-main\\GhostPush-main\\requirements.txt": {
+    "mtime": 1786443848.6285832,
+    "ast_hash": "23d2304aaaff7d6a62f2c0c1dfb99d21",
+    "semantic_hash": "23d2304aaaff7d6a62f2c0c1dfb99d21"
+  }
+}
