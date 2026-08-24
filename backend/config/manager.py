@@ -214,3 +214,35 @@ class ConfigManager:
         else:
             os.environ.pop(env_var, None)
 
+    def has_api_key(self, provider: str) -> bool:
+        """Return True only when a real (non-placeholder) credential is stored for *provider*.
+
+        Delegates to health.is_placeholder_key for placeholder detection.
+        Never reveals or logs the credential.
+        """
+        from backend.config.health import is_placeholder_key
+
+        raw = self.get_api_key(provider)
+        return not is_placeholder_key(raw)
+
+    def remove_api_key(self, provider: str) -> None:
+        """Remove the stored API key for *provider* from .env and process environment."""
+        if not provider or not isinstance(provider, str):
+            return
+
+        norm_provider = provider.lower().strip()
+        env_var = PROVIDER_ENV_MAP.get(norm_provider)
+        if not env_var:
+            return
+
+        # Remove from .env file
+        env_path = get_config_dir() / ".env"
+        if env_path.exists():
+            lines = env_path.read_text(encoding="utf-8").splitlines()
+            pattern = re.compile(rf"^\s*{re.escape(env_var)}\s*=")
+            new_lines = [line for line in lines if not pattern.match(line)]
+            env_path.write_text("\n".join(new_lines) + "\n", encoding="utf-8")
+
+        # Remove from process environment
+        os.environ.pop(env_var, None)
+

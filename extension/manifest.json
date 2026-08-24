@@ -10,7 +10,11 @@
   ],
   "host_permissions": [
     "http://127.0.0.1:8000/*",
-    "ws://127.0.0.1:8000/*"
+    "ws://127.0.0.1:8000/*",
+    "https://leetcode.com/*",
+    "https://*.geeksforgeeks.org/*",
+    "https://codeforces.com/*",
+    "https://*.hackerrank.com/*"
   ],
   "action": {
     "default_popup": "popup.html",

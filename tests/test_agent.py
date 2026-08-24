@@ -92,6 +92,29 @@ def test_git_tool_set_remote():
         assert new_remote_url in stdout
 
 
+def test_git_tool_push_auto_detects_branch():
+    with tempfile.TemporaryDirectory() as local_dir, tempfile.TemporaryDirectory() as remote_dir:
+        # Init a bare remote repo
+        GitTool._run_git_cmd(["init", "--bare"], remote_dir)
+
+        # Init local repo and rename branch to master
+        GitTool.init_or_open_repo(local_dir)
+        GitTool._run_git_cmd(["checkout", "-b", "master"], local_dir)
+
+        # Create dummy file & commit
+        with open(os.path.join(local_dir, "solution.py"), "w") as f:
+            f.write("# solution code")
+        GitTool.commit(local_dir, platform="leetcode", title="Test Problem")
+
+        # Push to bare remote without explicitly providing branch name
+        pushed = GitTool.push(local_dir, remote_url=remote_dir)
+        assert pushed is True
+
+        # Verify commit exists on remote master branch
+        code, stdout, _ = GitTool._run_git_cmd(["rev-parse", "HEAD"], remote_dir)
+        assert code == 0 and len(stdout) > 0
+
+
 def test_full_agent_job_success():
     with tempfile.TemporaryDirectory() as tmp_dir:
         payload = SubmissionPayload(

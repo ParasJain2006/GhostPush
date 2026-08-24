@@ -124,7 +124,7 @@ class GitTool:
         repo_path: str,
         remote_url: Optional[str] = None,
         remote: str = "origin",
-        branch: str = "main",
+        branch: Optional[str] = None,
     ) -> bool:
         """Pushes local commits to remote repository."""
         cls.init_or_open_repo(repo_path)
@@ -132,8 +132,18 @@ class GitTool:
         if remote_url and remote_url.strip():
             cls.set_remote(repo_path, remote_url=remote_url, remote_name=remote)
 
+        target_branch = branch
+        if not target_branch:
+            code_br, stdout_br, _ = cls._run_git_cmd(
+                ["rev-parse", "--abbrev-ref", "HEAD"], repo_path
+            )
+            if code_br == 0 and stdout_br and stdout_br != "HEAD":
+                target_branch = stdout_br
+            else:
+                target_branch = "HEAD"
+
         code, stdout, stderr = cls._run_git_cmd(
-            ["push", remote, branch], repo_path
+            ["push", remote, target_branch], repo_path
         )
 
         if code != 0:

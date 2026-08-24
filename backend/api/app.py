@@ -42,6 +42,20 @@ async def lifespan(app: FastAPI):
     notification_logger = logging.getLogger(NOTIFICATION_LOGGER_NAME)
     notification_logger.addHandler(ws_handler)
 
+    # Check AI provider configuration status
+    try:
+        settings = config_mgr.load_config()
+        current_provider = settings.ai_provider
+        if config_mgr.has_api_key(current_provider):
+            logger.info("AI provider configured: %s", current_provider)
+        else:
+            logger.warning(
+                "AI provider not configured for '%s'. Open Configuration to add your API key.",
+                current_provider,
+            )
+    except Exception as exc:
+        logger.warning("Could not check AI provider configuration on startup: %s", exc)
+
     # Store in app state
     app.state.config_mgr = config_mgr
     app.state.queue = queue

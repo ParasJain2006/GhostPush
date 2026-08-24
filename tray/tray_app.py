@@ -55,10 +55,61 @@ class TrayApp:
         self.launcher = launcher or BackendLauncher()
         self.config_helper = config_helper or TrayConfigHelper()
         self._icon: Optional["pystray.Icon"] = None
+        self._ai_status: str = "Unknown"
 
     def _get_status_text(self, item: Optional[object] = None) -> str:
-        """Return dynamic status text reflecting current backend launcher state."""
-        return "Status: Running" if self.launcher.is_running() else "Status: Stopped"
+        """Return dynamic status text reflecting current backend and AI readiness state."""
+        backend_str = "Backend: Running" if self.launcher.is_running() else "Backend: Stopped"
+        if not self.launcher.is_running():
+            return f"{backend_str} | AI: Unknown"
+        return f"{backend_str} | AI: {self._ai_status}"
+
+    def check_ai_status(self, notify: bool = False) -> None:
+        """Check AI provider health and update tray menu status text."""
+        def _check():
+            try:
+                settings = self.config_helper.get_current_settings()
+                provider = settings.ai_provider
+                model = settings.ai_model
+
+                if not self.config_helper.has_api_key(provider):
+                    self._ai_status = "Not Configured"
+                    if notify and self._icon and hasattr(self._icon, "notify"):
+                        self._icon.notify(
+                            "AI provider not configured.\nOpen Configuration to add your API key.",
+                            title="GhostPush AI Status",
+                        )
+                else:
+                    health = self.config_helper.check_provider_health(provider, model)
+                    if health.value == "CONNECTED":
+                        self._ai_status = f"{provider.capitalize()} Connected"
+                        if notify and self._icon and hasattr(self._icon, "notify"):
+                            self._icon.notify(
+                                f"{provider.capitalize()} connected successfully.",
+                                title="GhostPush AI Connected",
+                            )
+                    elif health.value == "INVALID_API_KEY":
+                        self._ai_status = "Connection Failed (Invalid Key)"
+                        if notify and self._icon and hasattr(self._icon, "notify"):
+                            self._icon.notify(
+                                f"{provider.capitalize()} API key is invalid.",
+                                title="GhostPush AI Error",
+                            )
+                    else:
+                        self._ai_status = "Connection Failed"
+                        if notify and self._icon and hasattr(self._icon, "notify"):
+                            self._icon.notify(
+                                f"AI provider error: {health.value}",
+                                title="GhostPush AI Warning",
+                            )
+            except Exception as e:
+                logger.warning(f"Error checking AI health: {e}")
+                self._ai_status = "Connection Failed"
+
+            self._refresh_menu()
+
+        t = threading.Thread(target=_check, name="GhostPushAICheckThread", daemon=True)
+        t.start()
 
     def _refresh_menu(self, icon: Optional[object] = None) -> None:
         """Refresh tray menu so status and item text reflect current state immediately."""
@@ -72,12 +123,13 @@ class TrayApp:
     # ── Menu action delegates ──────────────────────────────────────────────────
 
     def action_start_backend(self, icon: Optional[object] = None, item: Optional[object] = None) -> None:
-        """Start the FastAPI backend via BackendLauncher."""
+        """Start the FastAPI backend via BackendLauncher and perform AI status check."""
         result = self.launcher.start()
         if result:
             logger.info("Backend started from tray.")
         else:
             logger.warning("Backend was already running or failed to start.")
+        self.check_ai_status(notify=True)
         self._refresh_menu(icon)
 
     def action_stop_backend(self, icon: Optional[object] = None, item: Optional[object] = None) -> None:
@@ -147,6 +199,7 @@ class TrayApp:
             title="GhostPush",
             menu=self._build_menu(),
         )
+        self.check_ai_status(notify=True)
         logger.info("Starting GhostPush system tray icon.")
         self._icon.run()
 

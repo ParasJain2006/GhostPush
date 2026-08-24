@@ -30,7 +30,13 @@ def test_extension_manifest_exists_and_valid():
     content = json.loads(manifest_path.read_text(encoding="utf-8"))
     assert content.get("manifest_version") == 3
     assert content.get("name") == "GhostPush — AI Code Repository Sync"
-    assert "http://127.0.0.1:8000/*" in content.get("host_permissions", [])
+    host_perms = content.get("host_permissions", [])
+    assert "http://127.0.0.1:8000/*" in host_perms
+    # Required for chrome.scripting.executeScript with world:MAIN on supported platforms
+    assert "https://leetcode.com/*" in host_perms
+    assert "https://*.geeksforgeeks.org/*" in host_perms
+    assert "https://codeforces.com/*" in host_perms
+    assert "https://*.hackerrank.com/*" in host_perms
 
 
 def test_extension_files_exist():
@@ -188,3 +194,183 @@ public:
     # Test fallback default when selector and code are unknown
     assert sim_detect("", "foo bar baz") == "python"
 
+
+def test_extension_popup_helpers_exist_and_valid():
+    popup_path = Path("extension/popup.js")
+    content_path = Path("extension/content.js")
+    assert popup_path.exists()
+    assert content_path.exists()
+
+    popup_text = popup_path.read_text(encoding="utf-8")
+    content_text = content_path.read_text(encoding="utf-8")
+
+    # Verify previous content-script readiness helpers exist in popup.js
+    assert "function isSupportedUrl(" in popup_text
+    assert "function sendMessagePromise(" in popup_text
+    assert "function injectContentScript(" in popup_text
+    assert "async function ensureContentScript(" in popup_text
+    assert "async function extractFromCurrentTab(" in popup_text
+
+    # Verify new Monaco/MAIN-world helper exists
+    assert "async function getLeetCodeEditorData(" in popup_text
+    assert 'world: "MAIN"' in popup_text
+    assert "monacoData" in popup_text
+
+    # Verify content.js improvements
+    assert "window.__ghostPushContentScriptInjected" in content_text
+    assert "normalizeLangText" in content_text
+    assert "detectLanguageFromCode" in content_text
+    assert "monacoData" in content_text
+
+
+def test_extension_is_supported_url_logic():
+    """Verify isSupportedUrl logic matches supported DSA platforms."""
+    from urllib.parse import urlparse
+
+    def sim_is_supported(url):
+        if not url or not isinstance(url, str):
+            return False
+        try:
+            hostname = urlparse(url).hostname or ""
+            hostname = hostname.lower()
+            return (
+                hostname.endswith("leetcode.com")
+                or hostname.endswith("geeksforgeeks.org")
+                or hostname.endswith("codeforces.com")
+                or hostname.endswith("hackerrank.com")
+            )
+        except Exception:
+            return False
+
+    # Supported URLs
+    assert sim_is_supported("https://leetcode.com/problems/two-sum/")
+    assert sim_is_supported("https://leetcode.cn/problems/two-sum/") is False # leetcode.cn is not .com, matches manifest
+    assert sim_is_supported("https://practice.geeksforgeeks.org/problems/sort-an-array-of-0s-1s-and-2s4231/1")
+    assert sim_is_supported("https://codeforces.com/problemset/problem/1/A")
+    assert sim_is_supported("https://www.hackerrank.com/challenges/simple-array-sum/problem")
+
+    # Unsupported URLs
+    assert sim_is_supported("https://google.com") is False
+    assert sim_is_supported("https://github.com/user/repo") is False
+    assert sim_is_supported("chrome://extensions/") is False
+    assert sim_is_supported("") is False
+    assert sim_is_supported(None) is False
+
+
+def test_extension_language_selector_priority():
+    """Verify that normalizeLangText logic maps LeetCode selector labels correctly
+    and takes priority over code heuristics."""
+
+    def sim_normalize(raw):
+        """Mirrors normalizeLangText in content.js."""
+        if not raw or not isinstance(raw, str):
+            return None
+        norm = raw.strip().lower()
+        if norm in ("c++", "cpp"):
+            return "cpp"
+        if norm == "java":
+            return "java"
+        if norm.startswith("python"):
+            return "python"
+        if norm in ("javascript", "js"):
+            return "javascript"
+        if norm in ("typescript", "ts"):
+            return "typescript"
+        if norm in ("golang", "go"):
+            return "go"
+        if norm == "rust":
+            return "rust"
+        if norm == "kotlin":
+            return "kotlin"
+        if norm == "swift":
+            return "swift"
+        # Partial matches
+        if "c++" in norm or "cpp" in norm:
+            return "cpp"
+        if "java" in norm and "javascript" not in norm:
+            return "java"
+        if "python" in norm:
+            return "python"
+        if "javascript" in norm or ("js" in norm and "json" not in norm):
+            return "javascript"
+        if "typescript" in norm:
+            return "typescript"
+        if "kotlin" in norm:
+            return "kotlin"
+        if "rust" in norm:
+            return "rust"
+        if "golang" in norm or " go" in norm:
+            return "go"
+        return None
+
+    # Exact LeetCode labels
+    assert sim_normalize("Java") == "java"
+    assert sim_normalize("Python3") == "python"
+    assert sim_normalize("Python") == "python"
+    assert sim_normalize("C++") == "cpp"
+    assert sim_normalize("JavaScript") == "javascript"
+    assert sim_normalize("TypeScript") == "typescript"
+    assert sim_normalize("Go") == "go"
+    assert sim_normalize("Rust") == "rust"
+    assert sim_normalize("Kotlin") == "kotlin"
+    assert sim_normalize("Swift") == "swift"
+
+    # Unknown returns None (caller falls back to code heuristics)
+    assert sim_normalize("Unknown Lang") is None
+    assert sim_normalize("") is None
+    assert sim_normalize(None) is None
+
+
+def test_extension_language_selector_beats_code_heuristics():
+    """Critical: if the selector says Java, the result must be java even if the
+    visible code snippet looks like Python (i.e. no class declaration visible)."""
+    import re
+
+    def sim_normalize(raw):
+        """Mirrors normalizeLangText in content.js."""
+        if not raw or not isinstance(raw, str):
+            return None
+        norm = raw.strip().lower()
+        if norm == "java":
+            return "java"
+        if norm.startswith("python"):
+            return "python"
+        if "c++" in norm or "cpp" in norm:
+            return "cpp"
+        if "java" in norm and "javascript" not in norm:
+            return "java"
+        if "python" in norm:
+            return "python"
+        return None
+
+    def sim_detect_from_code(code):
+        """Mirrors detectLanguageFromCode in content.js."""
+        if not code:
+            return "python"
+        if re.search(r"\bdef\s+\w+\s*\(", code) or re.search(r"\bself\.", code):
+            return "python"
+        if re.search(r"\bpublic\s+class\b", code) or re.search(r"\bint\s*\[\s*\]", code):
+            return "java"
+        return "python"
+
+    def sim_detect_language(dom_text, code):
+        """Mirrors detectLanguage: normalizeLangText wins over code heuristics."""
+        from_dom = sim_normalize(dom_text)
+        if from_dom:
+            return from_dom
+        return sim_detect_from_code(code)
+
+    # Scenario: Java selected, but only bottom of solution visible (looks like Python)
+    partial_java_tail = "return maxLength;\n}\n}"
+    assert sim_detect_language("Java", partial_java_tail) == "java"
+
+    # Scenario: Python3 selected, bottom of solution visible looks like Java-ish
+    partial_python_tail = "return result"
+    assert sim_detect_language("Python3", partial_python_tail) == "python"
+
+    # Scenario: No selector, full Java code — code heuristics should work
+    full_java = "class Solution {\n    public int[] twoSum(int[] nums, int target) {}\n}"
+    assert sim_detect_language("", full_java) == "java"
+
+    # Scenario: No selector, empty code — default to python
+    assert sim_detect_language("", "") == "python"

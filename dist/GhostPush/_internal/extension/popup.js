@@ -51,22 +51,236 @@ function setupEventListeners() {
   document.getElementById("submission-form").addEventListener("submit", handleFormSubmit);
 }
 
-async function extractFromCurrentTab() {
-  if (typeof chrome !== "undefined" && chrome.tabs) {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tab && tab.id) {
-      chrome.tabs.sendMessage(tab.id, { action: "extract_problem" }, (response) => {
-        if (chrome.runtime.lastError || !response) {
-          alert("Could not extract metadata from current page. Please enter details manually.");
-          return;
+function isSupportedUrl(url) {
+  if (!url || typeof url !== "string") return false;
+  try {
+    const hostname = new URL(url).hostname.toLowerCase();
+    return (
+      hostname.endsWith("leetcode.com") ||
+      hostname.endsWith("geeksforgeeks.org") ||
+      hostname.endsWith("codeforces.com") ||
+      hostname.endsWith("hackerrank.com")
+    );
+  } catch (e) {
+    return false;
+  }
+}
+
+function sendMessagePromise(tabId, message) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId, message, (response) => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError.message));
+      } else {
+        resolve(response);
+      }
+    });
+  });
+}
+
+function injectContentScript(tabId) {
+  return new Promise((resolve, reject) => {
+    if (typeof chrome !== "undefined" && chrome.scripting && chrome.scripting.executeScript) {
+      chrome.scripting.executeScript(
+        {
+          target: { tabId: tabId },
+          files: ["content.js"]
+        },
+        (results) => {
+          if (chrome.runtime.lastError) {
+            reject(new Error(chrome.runtime.lastError.message));
+          } else {
+            resolve(results);
+          }
         }
-        if (response.platform) document.getElementById("platform").value = response.platform;
-        if (response.title) document.getElementById("title").value = response.title;
-        if (response.difficulty) document.getElementById("difficulty").value = response.difficulty;
-        if (response.language) document.getElementById("language").value = response.language;
-        if (response.tags) document.getElementById("tags").value = response.tags.join(", ");
-        if (response.code) document.getElementById("code").value = response.code;
-      });
+      );
+    } else {
+      reject(new Error("chrome.scripting API not available"));
+    }
+  });
+}
+
+/**
+ * Fetches Monaco editor code and language selector text from the page's MAIN
+ * JavaScript world. Content scripts run in an isolated world and cannot access
+ * window.monaco directly; chrome.scripting.executeScript with world:'MAIN'
+ * bridges that gap.
+ *
+ * Returns { code: string|null, langText: string|null } or null on failure.
+ */
+async function getLeetCodeEditorData(tabId) {
+  if (
+    typeof chrome === "undefined" ||
+    !chrome.scripting ||
+    !chrome.scripting.executeScript
+  ) {
+    return null;
+  }
+  try {
+    const results = await chrome.scripting.executeScript({
+      target: { tabId: tabId },
+      world: "MAIN",
+      func: () => {
+        // --- Code via Monaco model API ---
+        let code = null;
+        try {
+          if (window.monaco && window.monaco.editor) {
+            const models = window.monaco.editor.getModels();
+            if (models && models.length > 0) {
+              // Prefer the model whose URI suggests it's the solution file.
+              // LeetCode names models like "solution.java", "solution.py" etc.
+              const solutionModel = models.find(m =>
+                m.uri && /solution\.|Solution\.|code\./.test(m.uri.path || m.uri.toString()))
+                || models[0];
+              code = solutionModel.getValue();
+            }
+          }
+        } catch (e) {
+          // Monaco not available or not ready
+          code = null;
+        }
+
+        // --- Language via LeetCode's language picker ---
+        // LeetCode renders the currently selected language inside a button/div
+        // in the editor toolbar. We read it here in the MAIN world where the
+        // React state is populated.
+        let langText = null;
+        try {
+          // Try multiple known selectors in priority order
+          const candidates = [
+            // Current LeetCode design (headlessui popover button containing the language)
+            document.querySelector("button[id*='headlessui-popover-button']"),
+            // Alternate: look for element whose text matches known language names
+            // inside the editor area
+            document.querySelector("[data-cy='lang-select']"),
+            document.querySelector("div[class*='ant-select-selection-selected-value']"),
+          ];
+          for (const el of candidates) {
+            if (el && el.textContent && el.textContent.trim()) {
+              langText = el.textContent.trim();
+              break;
+            }
+          }
+
+          // If above selectors failed, try inferring from Monaco model URI
+          // (e.g., solution.java -> "Java", solution.py -> "Python")
+          if (!langText && code !== null) {
+            try {
+              const models = window.monaco && window.monaco.editor.getModels();
+              const mdl = models && (models.find(m =>
+                m.uri && /solution\.|Solution\.|code\./.test(m.uri.path || m.uri.toString()))
+                || models[0]);
+              if (mdl && mdl.getModeId) {
+                langText = mdl.getModeId();
+              } else if (mdl && mdl.getLanguageId) {
+                // Monaco 0.32+
+                langText = mdl.getLanguageId();
+              }
+            } catch (_) { /* ignore */ }
+          }
+        } catch (e) {
+          langText = null;
+        }
+
+        return { code, langText };
+      }
+    });
+
+    if (results && results[0] && results[0].result) {
+      return results[0].result;
+    }
+    return null;
+  } catch (e) {
+    console.log("[GhostPush] MAIN-world Monaco extraction failed (non-fatal):", e.message);
+    return null;
+  }
+}
+
+async function ensureContentScript(tabId, tabUrl) {
+  // 0. Pre-fetch Monaco data from the page's MAIN world (LeetCode only)
+  let monacoData = null;
+  const isLeetCode = tabUrl && tabUrl.includes("leetcode.com");
+  if (isLeetCode) {
+    monacoData = await getLeetCodeEditorData(tabId);
+    console.log("[GhostPush] MAIN-world Monaco data:",
+      monacoData ? `code=${monacoData.code ? monacoData.code.length + " chars" : "null"}, lang=${monacoData.langText}` : "unavailable"
+    );
+  }
+
+  // Build the message payload — content.js will use monacoData when present
+  const message = { action: "extract_problem", monacoData };
+
+  // 1. Try communicating first with existing content script
+  try {
+    const response = await sendMessagePromise(tabId, message);
+    if (response) return response;
+  } catch (firstErr) {
+    console.log("[GhostPush] First message attempt failed, checking fallback injection:", firstErr.message);
+  }
+
+  // 2. Validate URL is supported before attempting dynamic injection
+  if (!isSupportedUrl(tabUrl)) {
+    throw new Error("UNSUPPORTED_PAGE");
+  }
+
+  // 3. Inject content script into current tab
+  try {
+    await injectContentScript(tabId);
+  } catch (injErr) {
+    throw new Error(`Content script injection failed: ${injErr.message}`);
+  }
+
+  // 4. Retry extraction message after injection (pass monacoData again)
+  try {
+    const response = await sendMessagePromise(tabId, message);
+    if (response) return response;
+    throw new Error("No response received from content script after injection.");
+  } catch (retryErr) {
+    throw new Error(`Messaging failed after injection: ${retryErr.message}`);
+  }
+}
+
+let extractedUrl = "";
+
+async function extractFromCurrentTab() {
+  if (typeof chrome === "undefined" || !chrome.tabs) return;
+
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab || !tab.id) {
+      alert("Could not access active tab. Please enter details manually.");
+      return;
+    }
+
+    const tabUrl = tab.url || "";
+    if (tabUrl) extractedUrl = tabUrl;
+
+    if (!isSupportedUrl(tabUrl)) {
+      alert("GhostPush metadata extraction is only supported on LeetCode, GeeksforGeeks, Codeforces, and HackerRank.");
+      return;
+    }
+
+    const response = await ensureContentScript(tab.id, tabUrl);
+
+    if (!response) {
+      alert("Could not extract metadata from current page. Please enter details manually.");
+      return;
+    }
+
+    if (response.url) extractedUrl = response.url;
+    if (response.platform) document.getElementById("platform").value = response.platform;
+    if (response.title) document.getElementById("title").value = response.title.replace(/^\d+\.\s*/, "").trim();
+    if (response.difficulty) document.getElementById("difficulty").value = response.difficulty;
+    if (response.language) document.getElementById("language").value = response.language;
+    if (response.tags) document.getElementById("tags").value = Array.isArray(response.tags) ? response.tags.join(", ") : response.tags;
+    if (response.code) document.getElementById("code").value = response.code;
+
+  } catch (err) {
+    if (err.message === "UNSUPPORTED_PAGE") {
+      alert("GhostPush metadata extraction is only supported on LeetCode, GeeksforGeeks, Codeforces, and HackerRank.");
+    } else {
+      console.warn("[GhostPush] Metadata extraction error:", err);
+      alert(`Could not extract metadata from current page (${err.message}). Please enter details manually.`);
     }
   }
 }
@@ -84,7 +298,8 @@ async function handleFormSubmit(e) {
   currentJobId = jobId;
 
   const platform = document.getElementById("platform").value;
-  const title = document.getElementById("title").value.trim();
+  const rawTitle = document.getElementById("title").value.trim();
+  const title = rawTitle.replace(/^\d+\.\s*/, "").trim();
   const difficulty = document.getElementById("difficulty").value;
   const language = document.getElementById("language").value;
   const tagsRaw = document.getElementById("tags").value.trim();
@@ -92,8 +307,8 @@ async function handleFormSubmit(e) {
   const code = document.getElementById("code").value;
   const repoPath = document.getElementById("repo-path").value.trim();
 
-  let problemUrl = "";
-  if (typeof chrome !== "undefined" && chrome.tabs) {
+  let problemUrl = extractedUrl;
+  if (!problemUrl && typeof chrome !== "undefined" && chrome.tabs) {
     try {
       const [activeTab] = await chrome.tabs.query({ active: true, currentWindow: true });
       if (activeTab && activeTab.url) {

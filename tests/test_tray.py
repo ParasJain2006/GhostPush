@@ -157,6 +157,30 @@ def test_tray_config_helper_update_valid_settings(tmp_path):
         assert "secret" not in k.lower()
 
 
+def test_tray_config_helper_update_remote_repo_url(tmp_path):
+    config_file = tmp_path / "test_tray_config.json"
+    mgr = ConfigManager(config_path=config_file)
+    helper = TrayConfigHelper(config_manager=mgr)
+
+    valid_dir = str(tmp_path.resolve())
+    remote_url = "https://github.com/tavparsad-singh-khalsa/ghostpush-test.git"
+
+    updates = {
+        "repository_path": valid_dir,
+        "remote_repo_url": remote_url,
+        "auto_push": True,
+    }
+
+    updated = helper.update_settings(updates)
+    assert updated.remote_repo_url == remote_url
+    assert updated.auto_push is True
+
+    # Confirm persistence to file
+    reloaded = mgr.load_config()
+    assert reloaded.remote_repo_url == remote_url
+    assert reloaded.auto_push is True
+
+
 def test_tray_config_helper_rejects_invalid_configuration(tmp_path):
     config_file = tmp_path / "test_tray_config.json"
     mgr = ConfigManager(config_path=config_file)
@@ -314,15 +338,15 @@ def test_tray_app_run_creates_icon_when_pystray_available():
 
 
 def test_tray_app_dynamic_status_text():
-    """_get_status_text() dynamically returns Status: Running or Status: Stopped."""
+    """_get_status_text() dynamically returns Backend: Running or Backend: Stopped with AI status."""
     mock_launcher = MagicMock(spec=BackendLauncher)
     mock_launcher.is_running.return_value = False
     app = TrayApp(launcher=mock_launcher)
 
-    assert app._get_status_text() == "Status: Stopped"
+    assert "Backend: Stopped" in app._get_status_text()
 
     mock_launcher.is_running.return_value = True
-    assert app._get_status_text() == "Status: Running"
+    assert "Backend: Running" in app._get_status_text()
 
 
 def test_tray_app_actions_trigger_menu_refresh():

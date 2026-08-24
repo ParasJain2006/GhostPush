@@ -20,7 +20,7 @@ datas = [
     ('.env.example', '.'),
 ]
 
-hiddenimports = [
+hiddenimports = [ 
     # Uvicorn & ASGI runtime modules
     'uvicorn.logging',
     'uvicorn.loops.auto',
@@ -56,9 +56,13 @@ hiddenimports = [
     'backend.api.routes.health',
     'backend.api.routes.jobs',
     'backend.api.websocket',
+    'backend.config.health',
     'backend.config.manager',
     'backend.config.models',
     'backend.config.settings',
+    'tray.config_ui',
+    'tray.backend_launcher',
+    'tray.tray_app',
     'backend.db.database',
     'backend.db.repository',
     'backend.db.schema',
